@@ -46,7 +46,8 @@ func (h *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// 		methodHandler = h.GetPosts
 	// 	}
 	default:
-		http.Error(w, "Not Found", http.StatusNotFound)
+		w.Header().Set("Content-Type", jsonapi.MediaType)
+		http.Error(w, "Method Not Found", http.StatusNotFound)
 		return
 	}
 

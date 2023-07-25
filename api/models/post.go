@@ -7,10 +7,10 @@ import (
 )
 
 type Post struct {
-	ID        uuid.UUID  `jsonapi:"primary,posts`
-	Title     string     `jsonapi:"attr,title"`
-	AuthorID  uuid.UUID  `jsonapi:"attr,author_id"`
-	CreatedAt time.Time  `jsonapi:"attr,created_at"`
-	ViewCount int        `jsonapi:"attr,view_count"`
-	Comments  []*Comment `jsonapi:"relation,comments"`
+	ID        uuid.UUID  `json:"id" jsonapi:"primary,posts"`
+	Title     string     `json:"title" jsonapi:"attr,title"`
+	AuthorID  uuid.UUID  `json:"author_id" jsonapi:"attr,author_id"`
+	CreatedAt time.Time  `json:"created_at" jsonapi:"attr,created_at"`
+	ViewCount int        `json:"view_count" jsonapi:"attr,view_count"`
+	Comments  []*Comment `json:"comments" jsonapi:"relation,comments"`
 }
