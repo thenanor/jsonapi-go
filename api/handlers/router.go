@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	headerAccept      = "Accept"
-	headerContentType = "Content-Type"
+	HeaderAccept      = "Accept"
+	HeaderContentType = "Content-Type"
 )
 
 type Router struct {
@@ -29,7 +29,7 @@ func New() (*Router, error) {
 }
 
 func (h *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get(headerAccept) != jsonapi.MediaType {
+	if r.Header.Get(HeaderAccept) != jsonapi.MediaType {
 		http.Error(w, "Unsupported Media Type", http.StatusUnsupportedMediaType)
 	}
 

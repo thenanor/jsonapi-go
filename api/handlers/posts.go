@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/google/jsonapi"
@@ -9,7 +10,7 @@ import (
 )
 
 func (router *Router) CreatePost(w http.ResponseWriter, r *http.Request) {
-	post := models.Post{}
+	post := new(models.Post)
 
 	// Read the post from body and convert it to struct
 	if err := jsonapi.UnmarshalPayload(r.Body, post); err != nil {
@@ -17,18 +18,22 @@ func (router *Router) CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("the post unmarshaled ", post)
+
 	// Validate in BL and save in DL
-	postInternal, err := router.bl.CreatePost(context.Background(), post)
+	postInternal, err := router.bl.CreatePost(context.Background(), *post)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	fmt.Println("the post from the datalayer to be sent as a response ", postInternal)
+
 	// Prepare the response
 	w.Header().Set("Content-Type", jsonapi.MediaType)
 	w.WriteHeader(http.StatusCreated)
 
-	if err := jsonapi.MarshalPayload(w, postInternal); err != nil {
+	if err := jsonapi.MarshalPayload(w, &postInternal); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
