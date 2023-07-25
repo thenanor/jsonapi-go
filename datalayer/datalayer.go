@@ -14,7 +14,11 @@ type Datalayer interface {
 }
 
 func New() (Datalayer, error) {
-	dlType := os.Getenv("DL_TYPE")
+	dlType, exists := os.LookupEnv("DL_TYPE")
+	if !exists {
+		dlType = "memory"
+	}
+
 	switch dlType {
 	case "memory":
 		return memory.New()
