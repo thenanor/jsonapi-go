@@ -17,17 +17,15 @@ func (router *Router) CreatePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	fmt.Println("Read the body", post)
 
-	fmt.Println("the post unmarshaled ", post)
-
-	// Validate in BL and save in DL
 	postInternal, err := router.bl.CreatePost(context.Background(), *post)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("the post from the datalayer to be sent as a response ", postInternal)
+	fmt.Println("The response that will be marshalled:", postInternal)
 
 	// Prepare the response
 	w.Header().Set("Content-Type", jsonapi.MediaType)

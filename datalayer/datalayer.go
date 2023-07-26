@@ -11,6 +11,8 @@ import (
 
 type Datalayer interface {
 	CreatePost(context.Context, models.Post) error
+
+	CreateAuthor(context.Context, models.Author) error
 }
 
 func New() (Datalayer, error) {

@@ -10,6 +10,8 @@ import (
 
 type Businesslogic interface {
 	CreatePost(context.Context, models.Post) (models.Post, error)
+
+	CreateAuthor(context.Context, models.Author) (models.Author, error)
 }
 
 type BL struct {
