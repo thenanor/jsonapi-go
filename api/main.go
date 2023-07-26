@@ -1,22 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"os/signal"
 	"time"
 
-	"github.com/google/jsonapi"
-	"github.com/google/uuid"
 	"github.com/thenanor/jsonapi-go/api/handlers"
-	"github.com/thenanor/jsonapi-go/api/models"
 )
 
 func main() {
@@ -39,44 +31,6 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
-
-	fmt.Println("============ start POST a post ===========")
-	post := &models.Post{
-		ID:    uuid.NewString(),
-		Title: "My Post",
-		Author: &models.Author{
-			ID:   uuid.NewString(),
-			Name: "Some Author",
-		},
-		CreatedAt: time.Now(),
-		// Comments:  []*models.Comment{},
-	}
-
-	fmt.Println("the payload as struct:", post)
-	in := bytes.NewBuffer(nil)
-	if err := jsonapi.MarshalOnePayloadEmbedded(in, post); err != nil {
-		log.Fatal(err)
-	}
-
-	var prettyJSONRequest bytes.Buffer
-	_ = json.Indent(&prettyJSONRequest, in.Bytes(), "", "  ")
-	fmt.Println(prettyJSONRequest.String())
-
-	req, _ := http.NewRequest(http.MethodPost, "/posts", in)
-	req.Header.Set(handlers.HeaderAccept, jsonapi.MediaType)
-
-	w := httptest.NewRecorder()
-	http.DefaultServeMux.ServeHTTP(w, req)
-	fmt.Println("============ stop POST a post ===========")
-
-	fmt.Println("\n============ jsonapi response from create ===========")
-	buf := bytes.NewBuffer(nil)
-	io.Copy(buf, w.Body)
-
-	var prettyJSON bytes.Buffer
-	_ = json.Indent(&prettyJSON, buf.Bytes(), "", "  ")
-	fmt.Println(prettyJSON.String())
-	fmt.Println("============== end raw jsonapi response =============")
 
 	sigs := make(chan os.Signal)
 	signal.Notify(sigs, os.Interrupt)
