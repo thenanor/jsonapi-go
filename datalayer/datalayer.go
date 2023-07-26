@@ -11,6 +11,8 @@ import (
 
 type Datalayer interface {
 	CreatePost(context.Context, models.Post) error
+	GetPost(context.Context, string) (models.Post, error)
+	GetPosts(context.Context) ([]models.Post, error)
 
 	CreateAuthor(context.Context, models.Author) error
 }
