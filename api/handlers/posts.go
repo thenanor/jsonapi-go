@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -18,15 +19,12 @@ func (router *Router) CreatePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("Read the body", post)
 
 	postInternal, err := router.bl.CreatePost(context.Background(), *post)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Println("The response that will be marshalled:", postInternal)
 
 	// Prepare the response
 	w.Header().Set("Content-Type", jsonapi.MediaType)
@@ -49,8 +47,25 @@ func (router *Router) GetPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", jsonapi.MediaType)
 	w.WriteHeader(http.StatusOK)
 
-	if err := jsonapi.MarshalPayload(w, &post); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	queryParams := r.URL.Query()
+	fmt.Println("queryParams=", queryParams)
+
+	include := queryParams.Get("include")
+	if include == "" {
+		if err := jsonapi.MarshalPayloadWithoutIncluded(w, &post); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		includes := strings.Split(include, ",")
+		fmt.Println("length of includes", len(includes))
+		payload, err := jsonapi.Marshal(&post)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		// clear the not included includes from the payload
+
+		//write to the response
+		json.NewEncoder(w).Encode(payload)
 	}
 }
 

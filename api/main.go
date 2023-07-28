@@ -16,7 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to create api router %v", err)
 	}
-	http.HandleFunc("/posts", router.ServeHTTP)
+	http.HandleFunc("/", router.ServeHTTP)
 
 	sv := http.Server{
 		Addr:         ":9090",
