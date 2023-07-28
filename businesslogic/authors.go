@@ -7,17 +7,19 @@ import (
 	"github.com/thenanor/jsonapi-go/api/models"
 )
 
-func (bl *BL) CreateAuthor(ctx context.Context, author models.Author) (models.Author, error) {
+func (bl *BL) CreateAuthor(ctx context.Context, author *models.Author) (*models.Author, error) {
 	// do some validations on author
-	if author.ID == "" {
-		author.ID = uuid.NewString()
+	if author != nil {
+		if author.ID == "" {
+			author.ID = uuid.NewString()
+		}
+
+		// Send it to the DL
+		err := bl.datalayer.CreateAuthor(ctx, author)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	// Send it to the DL
-	err := bl.datalayer.CreateAuthor(ctx, author)
-	if err != nil {
-		return models.Author{}, err
-	}
 	return author, nil
-
 }

@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/google/jsonapi"
 	"github.com/thenanor/jsonapi-go/businesslogic"
@@ -41,10 +40,10 @@ func (h *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// case http.MethodPut:
 	// 	methodHandler = h.UpdatePosts
 	case http.MethodGet:
-		if strings.TrimPrefix(r.URL.Path, "/posts/") != "" {
-			methodHandler = h.GetPost
-		} else {
+		if r.URL.Path == "/posts" {
 			methodHandler = h.GetPosts
+		} else {
+			methodHandler = h.GetPost
 		}
 	default:
 		w.Header().Set("Content-Type", jsonapi.MediaType)
